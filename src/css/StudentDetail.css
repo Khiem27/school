@@ -1,0 +1,46 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+  text-align: center;
+}
+
+.student-details {
+  margin-top: 20px;
+}
+
+.details-item {
+  margin-bottom: 10px;
+}
+
+.student-image {
+  max-width: 100%;
+  max-height: 300px; /* Đặt chiều cao tối đa, bạn có thể thay đổi giá trị này theo ý muốn */
+  height: auto;
+  border-radius: 5px;
+  display: block;
+  margin: 0 auto 15px;
+}
+
+label {
+  display: inline-block;
+  width: 150px;
+  font-weight: bold;
+}
+
+span {
+  display: inline-block;
+}

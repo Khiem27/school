@@ -1,217 +1,186 @@
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-
-// material-ui
-import { Box, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-
-// third-party
+import { Box, Link, Table, TableBody, TableCell, TableContainer, TableRow, Button, TextField } from '@mui/material';
 import NumberFormat from 'react-number-format';
 
-// project import
-import Dot from 'components/@extended/Dot';
-
-function createData(trackingNo, name, fat, carbs, protein) {
-  return { trackingNo, name, fat, carbs, protein };
+// Tạo dữ liệu mẫu với các trường mới
+function createData(masv, tensv, dcsv, malp) {
+  return { masv, tensv, dcsv, malp };
 }
 
-const rows = [
-  createData(84564564, 'Camera Lens', 40, 2, 40570),
-  createData(98764564, 'Laptop', 300, 0, 180139),
-  createData(98756325, 'Mobile', 355, 1, 90989),
-  createData(98652366, 'Handset', 50, 1, 10239),
-  createData(13286564, 'Computer Accessories', 100, 1, 83348),
-  createData(86739658, 'TV', 99, 0, 410780),
-  createData(13256498, 'Keyboard', 125, 2, 70999),
-  createData(98753263, 'Mouse', 89, 2, 10570),
-  createData(98753275, 'Desktop', 185, 1, 98063),
-  createData(98753291, 'Chair', 100, 0, 14001)
+const initialRows = [
+  createData('SV001', 'Nguyễn Văn A', '123 Đường ABC, Quận 1, TP.HCM', 'L01'),
+  createData('SV002', 'Trần Thị B', '456 Đường XYZ, Quận 2, TP.HCM', 'L02'),
+  createData('SV003', 'Lê Văn C', '789 Đường LMN, Quận 3, TP.HCM', 'L03'),
+  createData('SV004', 'Phạm Thị D', '101 Đường DEF, Quận 4, TP.HCM', 'L04'),
+  createData('SV005', 'Hoàng Văn E', '202 Đường GHI, Quận 5, TP.HCM', 'L05'),
+  createData('SV006', 'Mai Thị F', '303 Đường KLM, Quận 6, TP.HCM', 'L06'),
+  createData('SV007', 'Vũ Văn G', '404 Đường NOP, Quận 7, TP.HCM', 'L07'),
+  createData('SV008', 'Lý Thị H', '505 Đường QRS, Quận 8, TP.HCM', 'L08'),
+  createData('SV009', 'Đỗ Văn I', '606 Đường UVW, Quận 9, TP.HCM', 'L09'),
+  createData('SV010', 'Ngô Thị K', '707 Đường XYZ, Quận 10, TP.HCM', 'L10')
 ];
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
-// ==============================|| ORDER TABLE - HEADER CELL ||============================== //
 
 const headCells = [
   {
-    id: 'trackingNo',
+    id: 'masv',
     align: 'left',
     disablePadding: false,
-    label: 'Tracking No.'
+    label: 'Mã Sinh Viên'
   },
   {
-    id: 'name',
+    id: 'tensv',
     align: 'left',
     disablePadding: true,
-    label: 'Product Name'
+    label: 'Tên Sinh Viên'
   },
   {
-    id: 'fat',
-    align: 'right',
-    disablePadding: false,
-    label: 'Total Order'
-  },
-  {
-    id: 'carbs',
+    id: 'dcsv',
     align: 'left',
     disablePadding: false,
-
-    label: 'Status'
+    label: 'Địa Chỉ Sinh Viên'
   },
   {
-    id: 'protein',
-    align: 'right',
+    id: 'malp',
+    align: 'left',
     disablePadding: false,
-    label: 'Total Amount'
+    label: 'Mã Lớp'
   }
 ];
 
-// ==============================|| ORDER TABLE - HEADER ||============================== //
+function EnhancedTableHead({ onFilterChange }) {
+  const handleFilterChange = (field, value) => {
+    onFilterChange(field, value);
+  };
 
-function OrderTableHead({ order, orderBy }) {
   return (
-    <TableHead>
+    <>
+      {/* Hàng filter */}
       <TableRow>
+        <TableCell>
+          <TextField
+            label="Lọc theo Mã Sinh Viên"
+            variant="standard"
+            size="small"
+            onChange={(e) => handleFilterChange('masv', e.target.value)}
+          />
+        </TableCell>
+        <TableCell>
+          <TextField
+            label="Lọc theo Tên Sinh Viên"
+            variant="standard"
+            size="small"
+            onChange={(e) => handleFilterChange('tensv', e.target.value)}
+          />
+        </TableCell>
+        <TableCell>
+          <TextField
+            label="Lọc theo Địa Chỉ Sinh Viên"
+            variant="standard"
+            size="small"
+            onChange={(e) => handleFilterChange('dcsv', e.target.value)}
+          />
+        </TableCell>
+        <TableCell>
+          <TextField label="Lọc theo Mã Lớp" variant="standard" size="small" onChange={(e) => handleFilterChange('malp', e.target.value)} />
+        </TableCell>
+      </TableRow>
+      {/* Hàng thông tin */}
+      <TableRow>
+        {/* Các ô thông tin */}
         {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.align}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
+          <TableCell key={headCell.id} align={headCell.align} padding={headCell.disablePadding ? 'none' : 'normal'}>
             {headCell.label}
           </TableCell>
         ))}
       </TableRow>
-    </TableHead>
+    </>
   );
 }
 
-OrderTableHead.propTypes = {
-  order: PropTypes.string,
-  orderBy: PropTypes.string
+EnhancedTableHead.propTypes = {
+  onRequestSort: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  onFilterChange: PropTypes.func.isRequired
 };
 
-// ==============================|| ORDER TABLE - STATUS ||============================== //
+function OrderTable() {
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('masv');
+  const [selected, setSelected] = useState([]);
+  const [rows, setRows] = useState(initialRows);
+  const [filter, setFilter] = useState({
+    masv: '',
+    tensv: '',
+    dcsv: '',
+    malp: ''
+  });
 
-const OrderStatus = ({ status }) => {
-  let color;
-  let title;
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
 
-  switch (status) {
-    case 0:
-      color = 'warning';
-      title = 'Pending';
-      break;
-    case 1:
-      color = 'success';
-      title = 'Approved';
-      break;
-    case 2:
-      color = 'error';
-      title = 'Rejected';
-      break;
-    default:
-      color = 'primary';
-      title = 'None';
-  }
+  const handleFilterChange = (field, value) => {
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      [field]: value
+    }));
+  };
 
-  return (
-    <Stack direction="row" spacing={1} alignItems="center">
-      <Dot color={color} />
-      <Typography>{title}</Typography>
-    </Stack>
-  );
-};
+  const isSelected = (masv) => selected.indexOf(masv) !== -1;
 
-OrderStatus.propTypes = {
-  status: PropTypes.number
-};
+  const deleteStudent = (masv) => {
+    const updatedRows = rows.filter((student) => student.masv !== masv);
+    setRows(updatedRows);
+    setSelected([]);
+  };
 
-// ==============================|| ORDER TABLE ||============================== //
-
-export default function OrderTable() {
-  const [order] = useState('asc');
-  const [orderBy] = useState('trackingNo');
-  const [selected] = useState([]);
-
-  const isSelected = (trackingNo) => selected.indexOf(trackingNo) !== -1;
+  // Lọc dữ liệu theo giá trị filter
+  const filteredRows = rows.filter((row) => {
+    return (
+      row.masv.toLowerCase().includes(filter.masv.toLowerCase()) &&
+      row.tensv.toLowerCase().includes(filter.tensv.toLowerCase()) &&
+      row.dcsv.toLowerCase().includes(filter.dcsv.toLowerCase()) &&
+      row.malp.toLowerCase().includes(filter.malp.toLowerCase())
+    );
+  });
 
   return (
     <Box>
-      <TableContainer
-        sx={{
-          width: '100%',
-          overflowX: 'auto',
-          position: 'relative',
-          display: 'block',
-          maxWidth: '100%',
-          '& td, & th': { whiteSpace: 'nowrap' }
-        }}
-      >
-        <Table
-          aria-labelledby="tableTitle"
-          sx={{
-            '& .MuiTableCell-root:first-of-type': {
-              pl: 2
-            },
-            '& .MuiTableCell-root:last-of-type': {
-              pr: 3
-            }
-          }}
-        >
-          <OrderTableHead order={order} orderBy={orderBy} />
+      <TableContainer>
+        <Table>
+          <EnhancedTableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} onFilterChange={handleFilterChange} />
           <TableBody>
-            {stableSort(rows, getComparator(order, orderBy)).map((row, index) => {
-              const isItemSelected = isSelected(row.trackingNo);
-              const labelId = `enhanced-table-checkbox-${index}`;
+            {filteredRows.map((row) => {
+              const isItemSelected = isSelected(row.masv);
 
               return (
-                <TableRow
-                  hover
-                  role="checkbox"
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  aria-checked={isItemSelected}
-                  tabIndex={-1}
-                  key={row.trackingNo}
-                  selected={isItemSelected}
-                >
-                  <TableCell component="th" id={labelId} scope="row" align="left">
-                    <Link color="secondary" component={RouterLink} to="">
-                      {row.trackingNo}
+                <TableRow hover role="checkbox" selected={isItemSelected} key={row.masv}>
+                  <TableCell align="left">
+                    <Link color="secondary" component={RouterLink} to={`/${row.masv}`}>
+                      {row.masv}
                     </Link>
                   </TableCell>
-                  <TableCell align="left">{row.name}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
-                  <TableCell align="left">
-                    <OrderStatus status={row.carbs} />
-                  </TableCell>
+                  <TableCell align="left">{row.tensv}</TableCell>
+                  <TableCell align="left">{row.dcsv}</TableCell>
+                  <TableCell align="left">{row.malp}</TableCell>
+                  {/* Các ô còn lại */}
                   <TableCell align="right">
                     <NumberFormat value={row.protein} displayType="text" thousandSeparator prefix="$" />
+                  </TableCell>
+                  <TableCell align="right" style={{ width: '50px' }}>
+                    <Button variant="outlined" color="secondary" style={{ fontSize: '0.8rem' }}>
+                      Edit
+                    </Button>
+                  </TableCell>
+                  <TableCell align="right" style={{ width: '50px' }}>
+                    <Button variant="outlined" color="error" style={{ fontSize: '0.8rem' }} onClick={() => deleteStudent(row.masv)}>
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               );
@@ -222,3 +191,5 @@ export default function OrderTable() {
     </Box>
   );
 }
+
+export default OrderTable;

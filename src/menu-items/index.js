@@ -1,13 +1,16 @@
 // project import
 import pages from './pages';
 import dashboard from './dashboard';
-import utilities from './utilities';
-import support from './support';
+import qllh from './qllh';
+import qlsv from './qlsv';
+import qlmh from './qlmh';
+import qld from './qld';
+import studentDetail from './studentDetail';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, pages, utilities, support]
+  items: [dashboard, qllh, qlmh, qlsv, qld, studentDetail, pages]
 };
 
 export default menuItems;

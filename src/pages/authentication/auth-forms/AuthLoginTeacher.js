@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 // material-ui
 import {
@@ -29,8 +29,9 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
-const AuthLogin = () => {
+const AuthLoginTeacher = () => {
   const [checked, setChecked] = React.useState(false);
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
@@ -45,19 +46,37 @@ const AuthLogin = () => {
     <>
       <Formik
         initialValues={{
-          mssv: '',
-          password: '',
-          role: 'sv'
+          username: '',
+          password: ''
         }}
         validationSchema={Yup.object().shape({
-          mssv: Yup.string().max(255).required('Nhập mã số sinh viên'),
+          username: Yup.string().max(255).required('Nhập Username'),
           password: Yup.string().max(255).required('Nhập mật khẩu')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            console.log('Form Values:', values);
-            setStatus({ success: false });
-            setSubmitting(false);
+            const response = await fetch('http://localhost:8081/users/signin', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(values)
+            });
+
+            if (!response.ok) {
+              // Xử lý lỗi nếu có
+              throw new Error('Authentication failed');
+            }
+
+            const data = await response.json();
+            console.log('API Response:', data);
+
+            // Lưu token vào localStorage
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('school_data', JSON.stringify(data));
+
+            // Chuyển hướng người dùng về trang "/"
+            navigate('/');
           } catch (err) {
             setStatus({ success: false });
             setErrors({ submit: err.message });
@@ -70,21 +89,20 @@ const AuthLogin = () => {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="mssv-login">Mã số sinh viên</InputLabel>
+                  <InputLabel htmlFor="username-login">Username</InputLabel>
                   <OutlinedInput
-                    id="mssv-login"
-                    type="number"
-                    value={values.mssv}
-                    name="mssv"
+                    id="username-login"
+                    value={values.username}
+                    name="username"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Nhập mã số sinh viên"
+                    placeholder="Nhập Username"
                     fullWidth
-                    error={Boolean(touched.email && errors.email)}
+                    error={Boolean(touched.username && errors.username)}
                   />
-                  {touched.email && errors.email && (
-                    <FormHelperText error id="standard-weight-helper-text-email-login">
-                      {errors.email}
+                  {touched.username && errors.username && (
+                    <FormHelperText error id="standard-weight-helper-text-username-login">
+                      {errors.username}
                     </FormHelperText>
                   )}
                 </Stack>
@@ -95,7 +113,7 @@ const AuthLogin = () => {
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.password && errors.password)}
-                    id="-password-login"
+                    id="password-login"
                     type={showPassword ? 'text' : 'password'}
                     value={values.password}
                     name="password"
@@ -163,4 +181,4 @@ const AuthLogin = () => {
   );
 };
 
-export default AuthLogin;
+export default AuthLoginTeacher;
